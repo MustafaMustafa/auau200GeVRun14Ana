@@ -136,18 +136,31 @@ Int_t StPicoD0AnaMaker::Make()
       StPicoTrack const* trk = picoDst->track(iTrack);
       if (!trk) continue;
       StPhysicalHelixD helix = trk->helix();
-      double dca = helix.geometricSignedDistance(pVtx);
+      float dca = float (helix.geometricSignedDistance(pVtx) );
       StThreeVectorF momentum = trk->gMom(pVtx,picoDst->event()->bField());
 
       bool TofMatch = getTofBeta(trk,&pVtx) > 0;
 
+      int tofMatchFlag =  TofMatch ? 1 : 0 ;
+      int hftMatchFlag =  trk->isHFTTrack() ? 1 :0 ;
+
       if (!isGoodQaTrack(trk, momentum, dca)) continue;
+      
+      StThreeVectorF dcaPoint = helix.at(helix.pathLength(pVtx.x(), pVtx.y()));
+      float dcaZ = dcaPoint.z() - pVtx.z();
+      StThreeVectorF dcaP = helix.momentumAt(pVtx.x(), pVtx.y());
+      float dcaXy = ((dcaPoint-pVtx).x()*dcaP.y()-(dcaPoint-pVtx).y()*dcaP.x())/dcaP.perp();
+
+      // mHists->addQaNtuple(picoDst->event()->runId(), dca, pVtx.z(), momentum.perp(), momentum.pseudoRapidity(), momentum.phi(), centrality, refmultCor, picoDst->event()->ZDCx(), tofMatchFlag, hftMatchFlag);
+
+      if (trk && TofMatch && fabs(dca)<1.0 && trk->isHFTTrack() ) mHists->addDcaPtCent(dca,dcaXy,dcaZ,momentum.perp(),centrality);//Dca distribution
+      // cout<<"dca="<<dca<<"dcaXy="<<dcaXy<<"dcaZ="<<dcaZ<<endl;
+
       if (trk && TofMatch && fabs(dca)<1.5) mHists->addTpcDenom1(momentum.perp(),centrality);//Dca cut on 1.5cm
       if (trk && TofMatch && fabs(dca)<0.1) mHists->addTpcDenom2(momentum.perp(),centrality);//Dca cut on 1mm
       if (trk && TofMatch && fabs(dca)<1.5 && trk->isHFTTrack()) mHists->addHFTNumer1(momentum.perp(),centrality);
       if (trk && TofMatch && fabs(dca)<0.1 && trk->isHFTTrack()) mHists->addHFTNumer2(momentum.perp(),centrality);
     } // .. end tracks loop
-
 
     for (int idx = 0; idx < aKaonPion->GetEntries(); ++idx)
     {
@@ -205,9 +218,9 @@ bool StPicoD0AnaMaker::isGoodEvent(StPicoEvent const * const picoEvent) const
 //-----------------------------------------------------------------------------
 bool StPicoD0AnaMaker::isGoodQaTrack(StPicoTrack const * const trk, StThreeVectorF const momentum, const double dca) const
 {
-  return trk->gPt() > anaCuts::qaGPt && trk->nHitsFit() >= anaCuts::qaNHitsFit &&
-    trk->nHitsDedx() >= anaCuts::qaNHitsDedx && fabs(dca) < anaCuts::qaDca &&
-    momentum.pseudoRapidity() < anaCuts::qaEta;
+  return trk->gPt() > anaCuts::qaGPt && trk->nHitsFit() >= anaCuts::qaNHitsFit;
+    // trk->nHitsDedx() >= anaCuts::qaNHitsDedx && fabs(dca) < anaCuts::qaDca &&
+    // momentum.pseudoRapidity() < anaCuts::qaEta;
 }
 //-----------------------------------------------------------------------------
 bool StPicoD0AnaMaker::isGoodTrack(StPicoTrack const * const trk, StKaonPion const * kp) const
