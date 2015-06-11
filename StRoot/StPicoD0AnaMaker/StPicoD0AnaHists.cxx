@@ -8,6 +8,7 @@
 #include "../StPicoPrescales/StPicoPrescales.h"
 #include "../StPicoD0EventMaker/StKaonPion.h"
 #include "StAnaCuts.h"
+#include "TNtuple.h" 
 
 #include "StPicoD0AnaHists.h"
 
@@ -17,7 +18,9 @@ ClassImp(StPicoD0AnaHists)
 StPicoD0AnaHists::StPicoD0AnaHists(TString fileBaseName) : mPrescales(NULL), mOutFile(NULL), 
   mh2InvariantMassVsPt(NULL), mh2InvariantMassVsPtLike(NULL), mh2InvariantMassVsPtTof(NULL), mh2InvariantMassVsPtTofLike(NULL),
   mh1Cent(NULL), mh1CentWg(NULL), mh1gRefmultCor(NULL), mh1gRefmultCorWg(NULL), mh3InvariantMassVsPtVsCent(NULL), mh3InvariantMassVsPtVsCentLike(NULL), mh3InvariantMassVsPtVsCentTof(NULL), mh3InvariantMassVsPtVsCentTofLike(NULL),
-   mh2Tpc1PtCent(NULL), mh2Tpc2PtCent(NULL), mh2HFT1PtCent(NULL), mh2HFT2PtCent(NULL)
+   mh2Tpc1PtCent(NULL), mh2Tpc2PtCent(NULL), mh2HFT1PtCent(NULL), mh2HFT2PtCent(NULL), 
+   mh3DcaPtCent(NULL), mh3DcaXyPtCent(NULL), mh3DcaZPtCent(NULL),
+   mh1Dca(NULL), mh1DcaXy(NULL), mh1DcaZ(NULL)
 {
   mPrescales = new StPicoPrescales(anaCuts::prescalesFilesDirectoryName);
 
@@ -45,6 +48,17 @@ StPicoD0AnaHists::StPicoD0AnaHists(TString fileBaseName) : mPrescales(NULL), mOu
   mh2Tpc2PtCent  = new TH2F("mh2Tpc2PtCent","Tpc tacks;p_{T}(GeV/c);cent",120,0,12,10,-1.5,8.5);//Dca 0.1cm
   mh2HFT1PtCent  = new TH2F("mh2HFT1PtCent","HFT tacks;p_{T}(GeV/c);cent",120,0,12,10,-1.5,8.5);//Dca 1.5cm
   mh2HFT2PtCent  = new TH2F("mh2HFT2PtCent","HFT tacks;p_{T}(GeV/c);cent",120,0,12,10,-1.5,8.5);//Dca 1.5cm
+
+  // Add some QA HFT , Dca, resolution
+  mh1Dca  = new TH1F("mh1Dca","mh1Dca;Dca(cm)",1000,-1,1);//Dca 1.cm
+  mh1DcaXy  = new TH1F("mh1DcaXy","mh1DcaXy;DcaXy(cm)",1000,-1,1);//Dca 1.cm
+  mh1DcaZ  = new TH1F("mh1DcaZ","mh1DcaZ;DcaZ(cm)",1000,-1,1);//Dca 1.cm
+
+  mh3DcaPtCent  = new TH3F("mh3DcaPtCent","mh3DcaPtCent;p_{T}(GeV/c);cent;Dca(cm)",120,0,12,10,-1.5,8.5,1000,-1,1);//Dca 1.cm
+  mh3DcaXyPtCent  = new TH3F("mh3DcaXyPtCent","mh3DcaXyPtCent;p_{T}(GeV/c);cent;DcaXy(cm)",120,0,12,10,-1.5,8.5,1000,-1,1);//Dca 1.cm
+  mh3DcaZPtCent  = new TH3F("mh3DcaZPtCent","mh3DcaZPtCent;p_{T}(GeV/c);cent;DcaZ(cm)",120,0,12,10,-1.5,8.5,1000,-1,1);//Dca 1.cm
+
+  nt = new TNtuple("nt","nt","runnumber:dca:vz:pt:eta:phi:centrality:grefmultCor:zdcCoincidance:tofMatchFlag:hftMatchFlag");
 }
 StPicoD0AnaHists::~StPicoD0AnaHists()
 {
@@ -111,6 +125,22 @@ void StPicoD0AnaHists::addKaonPion(StKaonPion const* const kp, bool unlike, bool
   }
 }
 //---------------------------------------------------------------------
+   void StPicoD0AnaHists::addDcaPtCent(float dca, float dcaXy, float dcaZ, float pt,  int centrality)
+{
+  mh1Dca->Fill(dca);
+  mh1DcaXy->Fill(dcaXy);
+  mh1DcaZ->Fill(dcaZ);
+  mh3DcaPtCent->Fill( pt, centrality, dca);
+  mh3DcaXyPtCent->Fill( pt, centrality, dcaXy);
+  mh3DcaZPtCent->Fill( pt, centrality, dcaZ);
+}
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+   void StPicoD0AnaHists::addQaNtuple(int runnumber, float dca, float vz, float pt, float eta, float phi, int centrality, const double refmultCor, float zdcx, int tofMatchFlag, int hftMatchFlag)
+{
+  nt->Fill(runnumber, dca, vz, pt, eta, phi, centrality, refmultCor, zdcx, tofMatchFlag, hftMatchFlag);
+}
+//---------------------------------------------------------------------
 void StPicoD0AnaHists::closeFile()
 {
   mOutFile->cd();
@@ -134,6 +164,15 @@ void StPicoD0AnaHists::closeFile()
   mh2Tpc2PtCent->Write();
   mh2HFT1PtCent->Write();
   mh2HFT2PtCent->Write();
+  //HFT DCA Ratio
+  mh1Dca->Write();
+  mh1DcaXy->Write();
+  mh1DcaZ->Write();
+  mh3DcaPtCent->Write();
+  mh3DcaXyPtCent->Write();
+  mh3DcaZPtCent->Write();
+
+  // nt->Write();
 
   mOutFile->Close();
 }

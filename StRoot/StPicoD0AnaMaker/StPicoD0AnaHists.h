@@ -19,6 +19,7 @@ class TString;
 class StPicoPrescales;
 class StPicoEvent;
 class StKaonPion;
+class TNtuple;
 
 
 class StPicoD0AnaHists: public TObject
@@ -34,6 +35,8 @@ class StPicoD0AnaHists: public TObject
    void addTpcDenom2(double pt, int centrality);
    void addHFTNumer1(double pt, int centrality);
    void addHFTNumer2(double pt, int centrality);
+   void addQaNtuple(int, float, float, float, float, float, int, const double, float, int, int);
+   void addDcaPtCent(float dca, float dcaXy, float  dcaZ, float pt,  int centrality);
    void closeFile();
 
   private:
@@ -61,6 +64,15 @@ class StPicoD0AnaHists: public TObject
    TH2F* mh2Tpc2PtCent;
    TH2F* mh2HFT1PtCent;
    TH2F* mh2HFT2PtCent;
+   //HFT Dca 
+   TH1F* mh1Dca;
+   TH1F* mh1DcaXy;
+   TH1F* mh1DcaZ;
+   TH3F* mh3DcaPtCent;
+   TH3F* mh3DcaXyPtCent;
+   TH3F* mh3DcaZPtCent;
+
+   TNtuple* nt;
 
    ClassDef(StPicoD0AnaHists, 1)
 };
