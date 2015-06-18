@@ -10,6 +10,9 @@
  */
 
 #include "TObject.h"
+#include "StAnaCuts.h"
+#include "THnSparse.h" 
+#include "THn.h" 
 
 class TH1F;
 class TH2F;
@@ -31,12 +34,14 @@ class StPicoD0AnaHists: public TObject
    void addEventBeforeCut(StPicoEvent const *);
    void addCent(const double refmultCor,int centrality, const double reweight);
    void addKaonPion(StKaonPion const*, bool unlike, bool tpc, bool tof, int centrality, const double reweight);
-   void addTpcDenom1(double pt, int centrality);
-   void addTpcDenom2(double pt, int centrality);
-   void addHFTNumer1(double pt, int centrality);
-   void addHFTNumer2(double pt, int centrality);
+   void addTpcDenom1(int Particle, float pt, int centrality, float Eta, float Phi, float Vz, float ZdcX);
+   void addHFTNumer1(int Particle, float pt, int centrality, float Eta, float Phi, float Vz, float ZdcX);
    void addQaNtuple(int, float, float, float, float, float, int, const double, float, int, int);
-   void addDcaPtCent(float dca, float dcaXy, float  dcaZ, float pt,  int centrality);
+   void addDcaPtCent(float dca, float dcaXy, float  dcaZ, int Particle, float pt,  int centrality, float Eta, float Phi, float Vz, float ZdcX);
+   int getEtaIndex(float Eta) ;
+   int getPhiIndex(float Phi) ;
+   int getVzIndex(float Vz) ;
+   int getZdcxIndex(float ZdcX) ;
    void closeFile();
 
   private:
@@ -60,19 +65,32 @@ class StPicoD0AnaHists: public TObject
    TH3F* mh3InvariantMassVsPtVsCentTof;
    TH3F* mh3InvariantMassVsPtVsCentTofLike;
    //HFT ratio QA
-   TH2F* mh2Tpc1PtCent;
-   TH2F* mh2Tpc2PtCent;
-   TH2F* mh2HFT1PtCent;
-   TH2F* mh2HFT2PtCent;
-   //HFT Dca 
-   TH1F* mh1Dca;
-   TH1F* mh1DcaXy;
-   TH1F* mh1DcaZ;
-   TH3F* mh3DcaPtCent;
-   TH3F* mh3DcaXyPtCent;
-   TH3F* mh3DcaZPtCent;
+   // TH2F* mh2Tpc1PtCent;
+   // TH2F* mh2Tpc2PtCent;
+   // TH2F* mh2HFT1PtCent;
+   // TH2F* mh2HFT2PtCent;
+   TH2F* mh2Tpc1PtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
+   TH2F* mh2Tpc1PtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
+   TH2F* mh2Tpc1PtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
+   TH2F* mh2HFT1PtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
+   TH2F* mh2HFT1PtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
+   TH2F* mh2HFT1PtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
 
-   TNtuple* nt;
+   //HFT Dca 
+   // TH1F* mh1Dca;
+   // TH1F* mh1DcaXy;
+   // TH1F* mh1DcaZ;
+   TH3F* mh3DcaXyPtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
+   TH3F* mh3DcaXyPtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
+   TH3F* mh3DcaXyPtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
+   TH3F* mh3DcaZPtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
+   TH3F* mh3DcaZPtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
+   TH3F* mh3DcaZPtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
+   // TH3F* mh3DcaPtCent;
+   // TH3F* mh3DcaXyPtCent;
+   // TH3F* mh3DcaZPtCent;
+
+   //TNtuple* nt;
 
    ClassDef(StPicoD0AnaHists, 1)
 };
