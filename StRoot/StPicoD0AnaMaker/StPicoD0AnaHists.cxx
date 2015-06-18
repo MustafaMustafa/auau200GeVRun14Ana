@@ -19,7 +19,7 @@ ClassImp(StPicoD0AnaHists)
 //-----------------------------------------------------------------------
 StPicoD0AnaHists::StPicoD0AnaHists(TString fileBaseName) : mPrescales(NULL), mOutFile(NULL), 
   mh2InvariantMassVsPt(NULL), mh2InvariantMassVsPtLike(NULL), mh2InvariantMassVsPtTof(NULL), mh2InvariantMassVsPtTofLike(NULL),
-  mh1Cent(NULL), mh1CentWg(NULL), mh1gRefmultCor(NULL), mh1gRefmultCorWg(NULL), mh3InvariantMassVsPtVsCent(NULL), mh3InvariantMassVsPtVsCentLike(NULL), mh3InvariantMassVsPtVsCentTof(NULL), mh3InvariantMassVsPtVsCentTofLike(NULL),
+  mh1Cent(NULL), mh1CentWg(NULL), mh1gRefmultCor(NULL), mh1gRefmultCorWg(NULL), mh3InvariantMassVsPtVsCent(NULL), mh3InvariantMassVsPtVsCentLike(NULL), mh3InvariantMassVsPtVsCentTof(NULL), mh3InvariantMassVsPtVsCentTofLike(NULL)
 //   mh2Tpc1PtCent(NULL), mh2Tpc2PtCent(NULL), mh2HFT1PtCent(NULL), mh2HFT2PtCent(NULL), 
 //   mh3DcaPtCent(NULL), mh3DcaXyPtCent(NULL), mh3DcaZPtCent(NULL),
 //   mh1Dca(NULL), mh1DcaXy(NULL), mh1DcaZ(NULL)
