@@ -26,6 +26,8 @@
 #include "StAnaCuts.h"
 #include "StRoot/StRefMultCorr/StRefMultCorr.h"
 
+#include "StMemStat.h"
+
 ClassImp(StPicoD0AnaMaker)
 
 StPicoD0AnaMaker::StPicoD0AnaMaker(char const * name, TString const inputFilesList,
@@ -61,7 +63,6 @@ Int_t StPicoD0AnaMaker::Init()
 
    // -------------- USER VARIABLES -------------------------
    mHists = new StPicoD0AnaHists(mOutFileBaseName);
-
    mGRefMultCorrUtil = new StRefMultCorr("grefmult");
 
    return kStOK;
@@ -69,7 +70,7 @@ Int_t StPicoD0AnaMaker::Init()
 //-----------------------------------------------------------------------------
 StPicoD0AnaMaker::~StPicoD0AnaMaker()
 {
-  delete mGRefMultCorrUtil;
+   delete mGRefMultCorrUtil;
 }
 //-----------------------------------------------------------------------------
 Int_t StPicoD0AnaMaker::Finish()
@@ -80,6 +81,7 @@ Int_t StPicoD0AnaMaker::Finish()
 //-----------------------------------------------------------------------------
 Int_t StPicoD0AnaMaker::Make()
 {
+  StMemStat mem;
   readNextEvent();
 
   if (!mPicoDstMaker)
@@ -130,7 +132,7 @@ Int_t StPicoD0AnaMaker::Make()
 
     //Basiclly add some QA plots
     UInt_t nTracks = picoDst->numberOfTracks();
-
+  //  cout<<"mem: begin: nTracks="<<nTracks<<" ,"<<mem.Used()<<" prog size "<<mem.ProgSize()<<endl;
     for (unsigned short iTrack = 0; iTrack < nTracks; ++iTrack)
     { 
       StPicoTrack const* trk = picoDst->track(iTrack);
@@ -153,13 +155,21 @@ Int_t StPicoD0AnaMaker::Make()
 
       // mHists->addQaNtuple(picoDst->event()->runId(), dca, pVtx.z(), momentum.perp(), momentum.pseudoRapidity(), momentum.phi(), centrality, refmultCor, picoDst->event()->ZDCx(), tofMatchFlag, hftMatchFlag);
 
-      if (trk && TofMatch && fabs(dca)<1.0 && trk->isHFTTrack() ) mHists->addDcaPtCent(dca,dcaXy,dcaZ,momentum.perp(),centrality);//Dca distribution
-      // cout<<"dca="<<dca<<"dcaXy="<<dcaXy<<"dcaZ="<<dcaZ<<endl;
-
-      if (trk && TofMatch && fabs(dca)<1.5) mHists->addTpcDenom1(momentum.perp(),centrality);//Dca cut on 1.5cm
-      if (trk && TofMatch && fabs(dca)<0.1) mHists->addTpcDenom2(momentum.perp(),centrality);//Dca cut on 1mm
-      if (trk && TofMatch && fabs(dca)<1.5 && trk->isHFTTrack()) mHists->addHFTNumer1(momentum.perp(),centrality);
-      if (trk && TofMatch && fabs(dca)<0.1 && trk->isHFTTrack()) mHists->addHFTNumer2(momentum.perp(),centrality);
+      int Particle = -1;
+      if(fabs(trk->nSigmaPion()) < anaCuts::nSigmaPion)  Particle=0;
+      if(fabs(trk->nSigmaKaon()) < anaCuts::nSigmaKaon)  Particle=1;
+      if (trk && TofMatch && fabs(dca)<1.0 && trk->isHFTTrack() && (Particle==0 || Particle==1) )
+      {
+      mHists->addDcaPtCent(dca, dcaXy, dcaZ, Particle, momentum.perp(), centrality, momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx()/1000.);//add Dca distribution
+      }
+      if (trk && TofMatch && fabs(dca)<1.5 && (Particle==0 || Particle==1) ) 
+      {
+      mHists->addTpcDenom1(Particle, momentum.perp(), centrality, momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx()/1000.);//Dca cut on 1.5cm, add Tpc Denominator
+      }
+      if (trk && TofMatch && fabs(dca)<1.5 && trk->isHFTTrack() && (Particle==0 || Particle==1) ) 
+      {
+      mHists->addHFTNumer1(Particle, momentum.perp(), centrality,  momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx()/1000.);//Dca cut on 1.5cm, add HFT Numerator
+      }
     } // .. end tracks loop
 
     for (int idx = 0; idx < aKaonPion->GetEntries(); ++idx)
@@ -195,6 +205,7 @@ Int_t StPicoD0AnaMaker::Make()
 
     } // end of kaonPion loop
   } // end of isGoodEvent
+//      cout<<"Lomnitz: end******* event:"<<mem.Used()<<" prog size "<<mem.ProgSize()<<endl;
 
   return kStOK;
 }
@@ -202,9 +213,10 @@ Int_t StPicoD0AnaMaker::Make()
 int StPicoD0AnaMaker::getD0PtIndex(StKaonPion const * kp) const
 {
   for(int i=0; i < anaCuts::nPtBins; i++) {
-    if( (kp->pt() >= anaCuts::PtEdge[i]) && (kp->pt() < anaCuts::PtEdge[i+1]) )
+    if( (kp->pt() >= anaCuts::PtBinsEdge[i]) && (kp->pt() < anaCuts::PtBinsEdge[i+1]) )
      return i; 
   }
+  return anaCuts::nPtBins-1;
 }
 //-----------------------------------------------------------------------------
 bool StPicoD0AnaMaker::isGoodEvent(StPicoEvent const * const picoEvent) const
@@ -225,7 +237,8 @@ bool StPicoD0AnaMaker::isGoodQaTrack(StPicoTrack const * const trk, StThreeVecto
 //-----------------------------------------------------------------------------
 bool StPicoD0AnaMaker::isGoodTrack(StPicoTrack const * const trk, StKaonPion const * kp) const
 {
-  return trk->gPt() > anaCuts::minPt && trk->nHitsFit() >= anaCuts::nHitsFit;
+  StThreeVectorF mom= trk->gMom(mPicoDstMaker->picoDst()->event()->primaryVertex(),mPicoDstMaker->picoDst()->event()->bField());
+  return trk->gPt() > anaCuts::minPt && trk->nHitsFit() >= anaCuts::nHitsFit && fabs(mom.pseudoRapidity())<=anaCuts::Eta;
 }
 //-----------------------------------------------------------------------------
 bool StPicoD0AnaMaker::isTpcPion(StPicoTrack const * const trk) const
@@ -245,6 +258,7 @@ bool StPicoD0AnaMaker::isGoodPair(StKaonPion const* const kp) const
     kp->pionDca() > anaCuts::pDca[tmpIndex] && kp->kaonDca() > anaCuts::kDca[tmpIndex] &&
     kp->dcaDaughters() < anaCuts::dcaDaughters[tmpIndex] &&
     kp->decayLength() > anaCuts::decayLength[tmpIndex] &&
+    fabs( kp->lorentzVector().rapidity() ) < anaCuts::RapidityCut &&
     ((kp->decayLength())*sin(kp->pointingAngle())) < anaCuts::dcaV0ToPv[tmpIndex];
 }
 //-----------------------------------------------------------------------------
