@@ -34,15 +34,19 @@ class StPicoD0AnaHists: public TObject
    void addEventBeforeCut(StPicoEvent const *);
    void addCent(const double refmultCor,int centrality, const double reweight);
    void addKaonPion(StKaonPion const*, bool unlike, bool tpc, bool tof, int centrality, const double reweight);
-   void addTpcDenom1(int Particle, float pt, int centrality, float Eta, float Phi, float Vz, float ZdcX);
-   void addHFTNumer1(int Particle, float pt, int centrality, float Eta, float Phi, float Vz, float ZdcX);
+   void addTpcDenom1(bool IsPion, bool IsKaon, float pt, int centrality, float Eta, float Phi, float Vz, float ZdcX);
+   void addHFTNumer1(bool IsPion, bool IsKaon, float pt, int centrality, float Eta, float Phi, float Vz, float ZdcX);
    void addQaNtuple(int, float, float, float, float, float, int, const double, float, int, int);
-   void addDcaPtCent(float dca, float dcaXy, float  dcaZ, int Particle, float pt,  int centrality, float Eta, float Phi, float Vz, float ZdcX);
+   void addDcaPtCent(float dca, float dcaXy, float  dcaZ, bool IsPion, bool IsKaon, float pt,  int centrality, float Eta, float Phi, float Vz, float ZdcX);
    int getEtaIndex(float Eta) ;
    int getPhiIndex(float Phi) ;
    int getVzIndex(float Vz) ;
    int getZdcxIndex(float ZdcX) ;
    void closeFile();
+   void AddPionTest(float pt);
+   void AddKaonTest(float pt);
+   void AddPionTest2(float pt);
+   void AddKaonTest2(float pt);
 
   private:
    StPicoD0AnaHists(){}
@@ -89,6 +93,10 @@ class StPicoD0AnaHists: public TObject
    // TH3F* mh3DcaPtCent;
    // TH3F* mh3DcaXyPtCent;
    // TH3F* mh3DcaZPtCent;
+   TH1F* mh1Pion;
+   TH1F* mh1Kaon;
+   TH1F* mh1Pion2;
+   TH1F* mh1Kaon2;
 
    //TNtuple* nt;
 
