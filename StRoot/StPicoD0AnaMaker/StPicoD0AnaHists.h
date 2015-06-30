@@ -69,9 +69,11 @@ class StPicoD0AnaHists: public TObject
    TH3F* mh3InvariantMassVsPtVsCentTof;
    TH3F* mh3InvariantMassVsPtVsCentTofLike;
    //HFT ratio QA
-   // TH2F* mh2Tpc1PtCent;
+   TH2F* mh2Tpc1PtCent;
+   TH2F* mh2Tpc1PhiVz;
+   TH2F* mh2HFT1PhiVz;
    // TH2F* mh2Tpc2PtCent;
-   // TH2F* mh2HFT1PtCent;
+   TH2F* mh2HFT1PtCent;
    // TH2F* mh2HFT2PtCent;
    TH2F* mh2Tpc1PtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
    TH2F* mh2Tpc1PtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
@@ -90,9 +92,9 @@ class StPicoD0AnaHists: public TObject
    TH3F* mh3DcaZPtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
    TH3F* mh3DcaZPtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
    TH3F* mh3DcaZPtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
-   // TH3F* mh3DcaPtCent;
-   // TH3F* mh3DcaXyPtCent;
-   // TH3F* mh3DcaZPtCent;
+   TH3F* mh3DcaPtCent;
+   TH3F* mh3DcaXyPtCent;
+   TH3F* mh3DcaZPtCent;
    TH1F* mh1Pion;
    TH1F* mh1Kaon;
    TH1F* mh1Pion2;

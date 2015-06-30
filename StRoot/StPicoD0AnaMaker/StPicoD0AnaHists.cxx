@@ -19,8 +19,8 @@ ClassImp(StPicoD0AnaHists)
 //-----------------------------------------------------------------------
 StPicoD0AnaHists::StPicoD0AnaHists(TString fileBaseName) : mPrescales(NULL), mOutFile(NULL),
    mh2InvariantMassVsPt(NULL), mh2InvariantMassVsPtLike(NULL), mh2InvariantMassVsPtTof(NULL), mh2InvariantMassVsPtTofLike(NULL),
-   mh1Cent(NULL), mh1CentWg(NULL), mh1gRefmultCor(NULL), mh1gRefmultCorWg(NULL), mh3InvariantMassVsPtVsCent(NULL), mh3InvariantMassVsPtVsCentLike(NULL), mh3InvariantMassVsPtVsCentTof(NULL), mh3InvariantMassVsPtVsCentTofLike(NULL)
-//   mh2Tpc1PtCent(NULL), mh2Tpc2PtCent(NULL), mh2HFT1PtCent(NULL), mh2HFT2PtCent(NULL),
+   mh1Cent(NULL), mh1CentWg(NULL), mh1gRefmultCor(NULL), mh1gRefmultCorWg(NULL), mh3InvariantMassVsPtVsCent(NULL), mh3InvariantMassVsPtVsCentLike(NULL), mh3InvariantMassVsPtVsCentTof(NULL), mh3InvariantMassVsPtVsCentTofLike(NULL),mh2Tpc1PtCent(NULL),  mh2HFT1PtCent(NULL), mh3DcaXyPtCent(NULL), mh3DcaZPtCent(NULL),
+   mh2Tpc1PhiVz(NULL),mh2HFT1PhiVz(NULL)
 //   mh3DcaPtCent(NULL), mh3DcaXyPtCent(NULL), mh3DcaZPtCent(NULL),
 //   mh1Dca(NULL), mh1DcaXy(NULL), mh1DcaZ(NULL)
 {
@@ -80,8 +80,10 @@ StPicoD0AnaHists::StPicoD0AnaHists(TString fileBaseName) : mPrescales(NULL), mOu
    mh3InvariantMassVsPtVsCentTof     = new TH3F("mh3InvariantMassVsPtVsCentTof", "invariantMassVsPtVsCentTof;p_{T}(K#pi)(GeV/c);Cent;m_{K#pi}(GeV/c^{2})", 120, 0, 12, 10, -1.5, 8.5, 50, 1.6, 2.1);
    mh3InvariantMassVsPtVsCentTofLike = new TH3F("mh3InvariantMassVsPtVsCentTofLike", "invariantMassVsPtVsCentTofLike;p_{T}(K#pi)(GeV/c);Cent;m_{K#pi}(GeV/c^{2})", 120, 0, 12, 10, -1.5, 8.5, 50, 1.6, 2.1);
    //Add some HFT ratio plots
-//  mh2Tpc1PtCent  = new TH2F("mh2Tpc1PtCent","Tpc tacks;p_{T}(GeV/c);cent",120,0,12,10,-1.5,8.5);//Dca 1.5cm
-//  mh2HFT1PtCent  = new TH2F("mh2HFT1PtCent","HFT tacks;p_{T}(GeV/c);cent",120,0,12,10,-1.5,8.5);//Dca 1.5cm
+  mh2Tpc1PtCent  = new TH2F("mh2Tpc1PtCent","Tpc tacks;p_{T}(GeV/c);cent",120,0,12,10,-1.5,8.5);//Dca 1.5cm
+  mh2HFT1PtCent  = new TH2F("mh2HFT1PtCent","HFT tacks;p_{T}(GeV/c);cent",120,0,12,10,-1.5,8.5);//Dca 1.5cm
+  mh2Tpc1PhiVz  = new TH2F("mh2Tpc1PhiVz","Tpc tacks;#Phi;Vz",100,-3.1415,3.1415,20,-10,10);//Dca 1.5cm
+  mh2HFT1PhiVz  = new TH2F("mh2HFT1PhiVz","HFT tacks;#Phi;Vz",100,-3.1415,3.1415,20,-10,10);//Dca 1.5cm
    for (int iParticle = 0; iParticle < anaCuts::nParticles; iParticle++)
    {
       for (int iEta = 0; iEta < anaCuts::nEtas; iEta++)
@@ -152,8 +154,8 @@ StPicoD0AnaHists::StPicoD0AnaHists(TString fileBaseName) : mPrescales(NULL), mOu
    mh1Pion2  = new TH1F("mh1Pion2", "mh1Pion2;pT;counts", 120, 0, 12);
    mh1Kaon2  = new TH1F("mh1Kaon2", "mh1Kaon2;pT;counts", 120, 0, 12);
 ////  mh3DcaPtCent  = new TH3F("mh3DcaPtCent","mh3DcaPtCent;p_{T}(GeV/c);cent;Dca(cm)",120,0,12,10,-1.5,8.5,1000,-1,1);//Dca 1.cm
-////  mh3DcaXyPtCent  = new TH3F("mh3DcaXyPtCent","mh3DcaXyPtCent;p_{T}(GeV/c);cent;DcaXy(cm)",120,0,12,10,-1.5,8.5,1000,-1,1);//Dca 1.cm
-////  mh3DcaZPtCent  = new TH3F("mh3DcaZPtCent","mh3DcaZPtCent;p_{T}(GeV/c);cent;DcaZ(cm)",120,0,12,10,-1.5,8.5,1000,-1,1);//Dca 1.cm
+  mh3DcaXyPtCent  = new TH3F("mh3DcaXyPtCent","mh3DcaXyPtCent;p_{T}(GeV/c);cent;DcaXy(cm)",120,0,12,10,-1.5,8.5,1000,-1,1);//Dca 1.cm
+  mh3DcaZPtCent  = new TH3F("mh3DcaZPtCent","mh3DcaZPtCent;p_{T}(GeV/c);cent;DcaZ(cm)",120,0,12,10,-1.5,8.5,1000,-1,1);//Dca 1.cm
 
 //  nt = new TNtuple("nt","nt","runnumber:dca:vz:pt:eta:phi:centrality:grefmultCor:zdcCoincidance:tofMatchFlag:hftMatchFlag");
 }
@@ -222,7 +224,8 @@ void StPicoD0AnaHists::addTpcDenom1(bool IsPion, bool IsKaon, float pt, int cent
       mh2Tpc1PtCentPartPhi[1][PhiIndex]->Fill(pt, centrality);
       mh2Tpc1PtCentPartZdcx[1][ZdcxIndex]->Fill(pt, centrality);
    }
-//mh2Tpc1PtCent->Fill(pt,centrality);
+   mh2Tpc1PtCent->Fill(pt,centrality);
+   if(fabs(Eta)<0.1 && pt>3.0) mh2Tpc1PhiVz->Fill(Phi,Vz);
 
 }
 //-----------------------------------------------------------------------
@@ -245,7 +248,8 @@ void StPicoD0AnaHists::addHFTNumer1(bool IsPion, bool IsKaon, float pt, int cent
       mh2HFT1PtCentPartPhi[1][PhiIndex]->Fill(pt, centrality);
       mh2HFT1PtCentPartZdcx[1][ZdcxIndex]->Fill(pt, centrality);
    }
-//  mh2HFT1PtCent->Fill(pt,centrality);
+  mh2HFT1PtCent->Fill(pt,centrality);
+  if(fabs(Eta)<0.1 && pt>3.0) mh2HFT1PhiVz->Fill(Phi,Vz);
 }
 //-----------------------------------------------------------------------
 void StPicoD0AnaHists::addKaonPion(StKaonPion const* const kp, bool unlike, bool tpc, bool tof, int centrality, const double reweight)
@@ -293,7 +297,8 @@ void StPicoD0AnaHists::addDcaPtCent(float dca, float dcaXy, float dcaZ, bool IsP
       mh3DcaZPtCentPartPhi[1][PhiIndex]->Fill(pt, centrality, dcaZ);
       mh3DcaZPtCentPartZdcx[1][ZdcxIndex]->Fill(pt, centrality, dcaZ);
    }
-
+   mh3DcaXyPtCent->Fill(pt,centrality,dcaXy);
+   mh3DcaZPtCent->Fill(pt,centrality,dcaZ);
 }
 //---------------------------------------------------------------------
 int StPicoD0AnaHists::getEtaIndex(float Eta)
@@ -361,9 +366,11 @@ void StPicoD0AnaHists::closeFile()
    mh3InvariantMassVsPtVsCentTof->Write();
    mh3InvariantMassVsPtVsCentTofLike->Write();
    //HFT ratio QA
-//  mh2Tpc1PtCent->Write();
+  mh2Tpc1PtCent->Write();
+  mh2Tpc1PhiVz->Write();
+  mh2HFT1PhiVz->Write();
 //  mh2Tpc2PtCent->Write();
-//  mh2HFT1PtCent->Write();
+  mh2HFT1PtCent->Write();
 //  mh2HFT2PtCent->Write();
 
    //HFT DCA Ratio
@@ -408,8 +415,8 @@ void StPicoD0AnaHists::closeFile()
    mh1Pion2->Write();
    mh1Kaon2->Write();
 ////  mh3DcaPtCent->Write();
-////  mh3DcaXyPtCent->Write();
-////  mh3DcaZPtCent->Write();
+  mh3DcaXyPtCent->Write();
+  mh3DcaZPtCent->Write();
 
    // nt->Write();
 
