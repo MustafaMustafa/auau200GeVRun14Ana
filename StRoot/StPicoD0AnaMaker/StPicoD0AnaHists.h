@@ -32,7 +32,7 @@ class StPicoD0AnaHists: public TObject
    virtual ~StPicoD0AnaHists();
    void addEvent(StPicoEvent const *);
    void addEventBeforeCut(StPicoEvent const *);
-   void addCent(const double refmultCor,int centrality, const double reweight);
+   void addCent(const double refmultCor,int centrality, const double reweight, const float vz);
    void addKaonPion(StKaonPion const*, bool unlike, bool tpc, bool tof, int centrality, const double reweight);
    void addTpcDenom1(bool IsPion, bool IsKaon, float pt, int centrality, float Eta, float Phi, float Vz, float ZdcX);
    void addHFTNumer1(bool IsPion, bool IsKaon, float pt, int centrality, float Eta, float Phi, float Vz, float ZdcX);
@@ -43,10 +43,6 @@ class StPicoD0AnaHists: public TObject
    int getVzIndex(float Vz) ;
    int getZdcxIndex(float ZdcX) ;
    void closeFile();
-   void AddPionTest(float pt);
-   void AddKaonTest(float pt);
-   void AddPionTest2(float pt);
-   void AddKaonTest2(float pt);
 
   private:
    StPicoD0AnaHists(){}
@@ -64,6 +60,8 @@ class StPicoD0AnaHists: public TObject
    TH1F* mh1CentWg;
    TH1F* mh1gRefmultCor;
    TH1F* mh1gRefmultCorWg;
+   TH2F* mh2CentVz;
+   TH2F* mh2CentVzWg;
    TH3F* mh3InvariantMassVsPtVsCent;
    TH3F* mh3InvariantMassVsPtVsCentLike;
    TH3F* mh3InvariantMassVsPtVsCentTof;
@@ -72,9 +70,7 @@ class StPicoD0AnaHists: public TObject
    TH2F* mh2Tpc1PtCent;
    TH2F* mh2Tpc1PhiVz;
    TH2F* mh2HFT1PhiVz;
-   // TH2F* mh2Tpc2PtCent;
    TH2F* mh2HFT1PtCent;
-   // TH2F* mh2HFT2PtCent;
    TH2F* mh2Tpc1PtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
    TH2F* mh2Tpc1PtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
    TH2F* mh2Tpc1PtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
@@ -83,22 +79,14 @@ class StPicoD0AnaHists: public TObject
    TH2F* mh2HFT1PtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
 
    //HFT Dca 
-   // TH1F* mh1Dca;
-   // TH1F* mh1DcaXy;
-   // TH1F* mh1DcaZ;
    TH3F* mh3DcaXyPtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
    TH3F* mh3DcaXyPtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
    TH3F* mh3DcaXyPtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
    TH3F* mh3DcaZPtCentPartEtaVz[anaCuts::nParticles][anaCuts::nEtas][anaCuts::nVzs];
    TH3F* mh3DcaZPtCentPartPhi[anaCuts::nParticles][anaCuts::nPhis];
    TH3F* mh3DcaZPtCentPartZdcx[anaCuts::nParticles][anaCuts::nZdcxs];
-   TH3F* mh3DcaPtCent;
    TH3F* mh3DcaXyPtCent;
    TH3F* mh3DcaZPtCent;
-   TH1F* mh1Pion;
-   TH1F* mh1Kaon;
-   TH1F* mh1Pion2;
-   TH1F* mh1Kaon2;
 
    //TNtuple* nt;
 
