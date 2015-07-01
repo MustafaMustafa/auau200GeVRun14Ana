@@ -90,17 +90,17 @@ class hists
 public:
 
    hists(int decayChannel, std::string title): h2Mass(NULL), h2MassMisPid(NULL), h2MassX(NULL), h2MassMisPidX(NULL),
-      h2KDcaVsPt(NULL), h2PiDcaVsPt(NULL), h2CosThetaVsPt(NULL), h2DcaToPvVsPt(NULL)
+                                               h2KDcaVsPt(NULL), h2PiDcaVsPt(NULL), h2CosThetaVsPt(NULL), h2DcaToPvVsPt(NULL)
    {
       h2Mass = new TH2F(Form("h%i", decayChannel), Form("%s without cuts", title.c_str()), 100, 0, 10, 160, 0.5, 2.1);
       h2MassMisPid = new TH2F(Form("h%iMisPid", decayChannel), Form("%s misPid", title.c_str()), 100, 0, 10, 160, 0.5, 2.1);
       h2MassX = new TH2F(Form("h%ix", decayChannel), Form("%s with cuts", title.c_str()), 100, 0, 10, 160, 0.5, 2.1);
       h2MassMisPidX = new TH2F(Form("h%ixMisPid", decayChannel), Form("%s misPid with wuts", title.c_str()), 100, 0, 10, 160, 0.5, 2.1);
 
-      h2KDcaVsPt = new TH2F(Form("hKDcaVsPt%i", decayChannel), "", 100, 0, 10, 2000, 0, 20000);
-      h2PiDcaVsPt = new TH2F(Form("hPiDcaVsPt%i", decayChannel), "", 100, 0, 10, 2000, 0, 20000);
-      h2CosThetaVsPt = new TH2F(Form("hCosThetaVsPt%i", decayChannel), "", 100, 0, 10, 2000, -1., 1.);
-      h2DcaToPvVsPt = new TH2F(Form("hDcaToPv%i", decayChannel), "", 100, 0, 10, 2000, 0, 20000);
+      h2KDcaVsPt = new TH2F(Form("hKDcaVsPt%i",decayChannel),"",100,0,10,2000,0,20000);
+      h2PiDcaVsPt = new TH2F(Form("hPiDcaVsPt%i",decayChannel),"",100,0,10,2000,0,20000);
+      h2CosThetaVsPt = new TH2F(Form("hCosThetaVsPt%i",decayChannel),"",100,0,10,2000,-1.,1.);
+      h2DcaToPvVsPt = new TH2F(Form("hDcaToPv%i",decayChannel),"",100,0,10,2000,0,20000);
 
       h2Mass->Sumw2();
       h2MassMisPid->Sumw2();
@@ -115,18 +115,18 @@ public:
 
    void fill(d0BumpNt const* const t, bool passTopologicalCuts, bool misPid)
    {
-      h2KDcaVsPt->Fill(t->rPt, t->kRDca);
-      h2PiDcaVsPt->Fill(t->rPt, t->pRDca);
-      h2CosThetaVsPt->Fill(t->rPt, t->cosTheta);
-      h2DcaToPvVsPt->Fill(t->rPt, t->dcaD0ToPv);
+     h2KDcaVsPt->Fill(t->rPt,t->kRDca);
+     h2PiDcaVsPt->Fill(t->rPt,t->pRDca);
+     h2CosThetaVsPt->Fill(t->rPt,t->cosTheta);
+     h2DcaToPvVsPt->Fill(t->rPt,t->dcaD0ToPv);
 
-      h2Mass->Fill(t->rPt, t->rM, t->pt * t->w);
-      if (misPid) h2MassMisPid->Fill(t->rPt, t->misPidM, t->pt * t->w);
-      if (passTopologicalCuts)
-      {
-         h2MassX->Fill(t->rPt, t->rM, t->pt * t->w);
-         if (misPid) h2MassMisPidX->Fill(t->rPt, t->misPidM, t->pt * t->w);
-      }
+     h2Mass->Fill(t->rPt, t->rM, t->pt * t->w);
+     if (misPid) h2MassMisPid->Fill(t->rPt, t->misPidM, t->pt * t->w);
+     if (passTopologicalCuts)
+     {
+       h2MassX->Fill(t->rPt, t->rM, t->pt * t->w);
+       if (misPid) h2MassMisPidX->Fill(t->rPt, t->misPidM, t->pt * t->w);
+     }
    }
 
    void write(TFile* fOut)
@@ -199,22 +199,22 @@ int main(int argc, char **argv)
       switch (static_cast<int>(t->decayChannel))
       {
          case 763:
-            hists763.fill(t, passTopologicalCuts, misPid);
+            hists763.fill(t,passTopologicalCuts,misPid);
             break;
          case 785:
-            hists785.fill(t, passTopologicalCuts, misPid);
+            hists785.fill(t,passTopologicalCuts,misPid);
             break;
          case 765:
-            hists765.fill(t, passTopologicalCuts, misPid);
+            hists765.fill(t,passTopologicalCuts,misPid);
             break;
          case 764:
-            hists764.fill(t, passTopologicalCuts, misPid);
+            hists764.fill(t,passTopologicalCuts,misPid);
             break;
          case 786:
-            hists786.fill(t, passTopologicalCuts, misPid);
+            hists786.fill(t,passTopologicalCuts,misPid);
             break;
          case 719:
-            hists719.fill(t, passTopologicalCuts, misPid);
+            hists719.fill(t,passTopologicalCuts,misPid);
             break;
          default:
             cout << "Uknown decayChannel!" << endl;
