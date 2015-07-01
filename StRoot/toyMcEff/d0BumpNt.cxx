@@ -1,14 +1,14 @@
-#define d0Nt_cxx
-#include "d0Nt.h"
+#define d0BumpNt_cxx
+#include "d0BumpNt.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void d0Nt::Loop()
+void d0BumpNt::Loop()
 {
 //   In a ROOT session, you can do:
-//      Root > .L d0Nt.C
-//      Root > d0Nt t
+//      Root > .L d0BumpNt.C
+//      Root > d0BumpNt t
 //      Root > t.GetEntry(12); // Fill t data members with entry number 12
 //      Root > t.Show();       // Show values of entry 12
 //      Root > t.Show(16);     // Read and show values of entry 16

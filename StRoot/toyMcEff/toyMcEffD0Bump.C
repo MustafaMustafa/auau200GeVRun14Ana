@@ -1,7 +1,6 @@
 /* *********************************************************************
- *  ROOT macro - Toy Monte Carlo Simulation for D0 decay
+ *  ROOT macro - Toy Monte Carlo Simulation for studying the D0 we see in data
  *  Includes Momentum Resolution, DCA, hft ration, TPC efficiency ...
- *  Example for D0 --> Kpi
  *
  *  Authors:
  *            Guannan Xie (guannanxie@lbl.gov)
@@ -39,8 +38,8 @@
 using namespace std;
 
 void setDecayChannels(int const mdme);
-void decayAndFill(int const kf, TLorentzVector* b, double const weight, TClonesArray& daughters);
-void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& kMom, TLorentzVector const& piMom, TVector3 const& v00);
+void decayAndFill(int const kf, int const decayChennel, TLorentzVector* b, double const weight, TClonesArray& daughters);
+void fill(int const kf, int const decayChennel, TLorentzVector* b, double weight, TLorentzVector const& kMom, TLorentzVector const& pMom, TVector3 const& v00);
 void getKinematics(TLorentzVector& b, double const mass);
 TLorentzVector smearMom(TLorentzVector const& b, TF1 const * const fMomResolution);
 TVector3 smearPos(TLorentzVector const& mom, TLorentzVector const& rMom, TVector3 const& pos);
@@ -76,8 +75,8 @@ TH1D* hHftRatio[nCent];
 TH1D* h1DcaZ[nCent][nPtBins];
 TH1D* h1DcaXY[nCent][nPtBins];
 
-string outFileName = "D0.toyMc.root";
-std::pair<int, int> const decayChannels(747, 807);
+string outFileName = "D0Bump.toyMc.root";
+std::pair<int, int> const decayChannels(673, 807);
 std::pair<float, float> const momentumRange(0.3, 12);
 
 float const acceptanceRapidity = 1.0;
@@ -86,7 +85,7 @@ float const pxlLayer1Thickness = 0.00486;
 float const sigmaVertexCent[nCent] = {31., 18.1, 12.8, 9.3, 7.2, 5.9, 5., 4.6, 4.};
 
 //============== main  program ==================
-void toyMcEffD0(int npart = 100)
+void toyMcEffD0Bump(int npart = 100)
 {
    gRandom->SetSeed();
    bookObjects();
@@ -94,7 +93,28 @@ void toyMcEffD0(int npart = 100)
    pydecay = TPythia6Decayer::Instance();
    pydecay->Init();
 
-   setDecayChannels(763); // D0 --> Kpi
+   TPythia6::Instance()->SetMDME(554, 1, 0); // π0 --> γγ
+   TPythia6::Instance()->SetMDME(555, 1, 0); // π0 --> γe-e+
+
+   TPythia6::Instance()->SetMDME(581, 1, 1); // ρ+ --> π+ π0
+   TPythia6::Instance()->SetMDME(582, 1, 0); // ρ+ --> π+ gamma
+
+   TPythia6::Instance()->SetMDME(556, 1, 1); // ρ0 --> π+ π-
+   TPythia6::Instance()->SetMDME(557, 1, 0); // ρ0 --> π0 γ
+   TPythia6::Instance()->SetMDME(558, 1, 0); // ρ0 --> η  γ                                                           
+   TPythia6::Instance()->SetMDME(559, 1, 0); // ρ0 --> μ- μ+                                                             
+   TPythia6::Instance()->SetMDME(560, 1, 0); // ρ0 --> e- e+                                                              
+
+   TPythia6::Instance()->SetMDME(636, 1, 0); // K*- --> K0 pi-
+   TPythia6::Instance()->SetMDME(637, 1, 1); // K*- --> K- π0
+   TPythia6::Instance()->SetMDME(638, 1, 0); // K*- --> K- γ
+
+   cout << "Decay channel  = " << 763 << " : D0 --> K- pi+" << endl;
+   cout << "Decay channel  = " << 785 << " : D0 --> K- pi+ pi0" << endl;
+   cout << "Decay channel  = " << 765 << " : D0 --> K- rho+ --> K- pi+ pi0" << endl;
+   cout << "Decay channel  = " << 764 << " : D0 --> K*- pi+  --> K- pi0 pi+" << endl;
+   cout << "Decay channel  = " << 786 << " : D0 --> K- pi+ rho0 --> K- pi+ pi+ pi-" <<endl;
+   cout << "Decay channel  = " << 719 << " : D+ --> K- pi+ pi+" << endl;
 
    TLorentzVector* b_d = new TLorentzVector;
    TClonesArray ptl("TParticle", 10);
@@ -105,8 +125,32 @@ void toyMcEffD0(int npart = 100)
 
       getKinematics(*b_d, M_D_0);
 
-      decayAndFill(421, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
-      decayAndFill(-421, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+      setDecayChannels(763);
+      decayAndFill(421, 763, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+      decayAndFill(-421, 763, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+
+      setDecayChannels(785);
+      decayAndFill(421, 785, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+      decayAndFill(-421, 785, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+
+      setDecayChannels(765);
+      decayAndFill(421, 765, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+      decayAndFill(-421, 765, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+
+      setDecayChannels(764);
+      decayAndFill(421, 764, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+      decayAndFill(-421, 764, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+
+      setDecayChannels(786);
+      decayAndFill(421, 786, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+      decayAndFill(-421, 786, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+
+      // D+ 
+      b_d->SetVectM(b_d->Vect(),M_D_PLUS);
+
+      setDecayChannels(719);
+      decayAndFill(411, 719, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
+      decayAndFill(-411, 719, b_d, fWeightFunction->Eval(b_d->Perp()), ptl);
    }
 
    write();
@@ -118,19 +162,21 @@ void setDecayChannels(int const mdme)
    TPythia6::Instance()->SetMDME(mdme, 1, 1);
 }
 
-void decayAndFill(int const kf, TLorentzVector* b, double const weight, TClonesArray& daughters)
+void decayAndFill(int const kf, int const decayChannel, TLorentzVector* b, double const weight, TClonesArray& daughters)
 {
    pydecay->Decay(kf, b);
    pydecay->ImportParticles(&daughters);
 
    TLorentzVector kMom;
-   TLorentzVector pMom;
+   TLorentzVector pi1Mom;
+   TLorentzVector pi2Mom;
    TVector3 v00;
 
    int nTrk = daughters.GetEntriesFast();
    for (int iTrk = 0; iTrk < nTrk; ++iTrk)
    {
       TParticle* ptl0 = (TParticle*)daughters.At(iTrk);
+      TLorentzVector tmp;
 
       switch (abs(ptl0->GetPdgCode()))
       {
@@ -139,7 +185,8 @@ void decayAndFill(int const kf, TLorentzVector* b, double const weight, TClonesA
             v00.SetXYZ(ptl0->Vx() * 1000., ptl0->Vy() * 1000., ptl0->Vz() * 1000.); // converted to μm
             break;
          case 211:
-            ptl0->Momentum(pMom);
+            if(!pi1Mom.P()) ptl0->Momentum(pi1Mom);
+            else ptl0->Momentum(pi2Mom);
             break;
          default:
             break;
@@ -147,10 +194,11 @@ void decayAndFill(int const kf, TLorentzVector* b, double const weight, TClonesA
    }
    daughters.Clear();
 
-   fill(kf,b,weight,kMom,pMom,v00);
+   fill(kf,decayChannel, b,weight,kMom,pi1Mom,v00);
+   if((decayChannel==719 || decayChannel==786)) fill(kf,decayChannel,b,weight,kMom,pi2Mom,v00);
 }
 
-void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& kMom, TLorentzVector const& pMom, TVector3 const& v00)
+void fill(int const kf, int const decayChannel, TLorentzVector* b, double weight, TLorentzVector const& kMom, TLorentzVector const& pMom, TVector3 const& v00)
 {
    // smear momentum
    TLorentzVector const kRMom = smearMom(kMom, fKaonMomResolution);
@@ -161,7 +209,7 @@ void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& 
    TVector3 const kRPos = smearPosData(cent, kRMom, v00);
    TVector3 const pRPos = smearPosData(cent, pRMom, v00);
    // TVector3 const kRPos = smearPos(kMom, kRMom, v00);
-   // TVector3 const pRPos = smearPos(pMom, pRMom, v00);
+   // TVector3 const pRPos = smearPos(kMom, pRMom, v00);
 
    // smear primary vertex
    // float const sigmaVertex = sigmaVertexCent[cent];
@@ -188,9 +236,17 @@ void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& 
    kRMomRest.Boost(-beta);
    float const cosThetaStar = rMom.Vect().Unit().Dot(kRMomRest.Vect().Unit());
 
+   // misPID
+   TLorentzVector kMisPidMom = kRMom;
+   TLorentzVector pMisPidMom = pRMom;
+   kMisPidMom.SetVectM(kRMom.Vect(), M_PION_PLUS);
+   pMisPidMom.SetVectM(pRMom.Vect(), M_KAON_PLUS);
+   TLorentzVector const rMisPidMom = kMisPidMom + pMisPidMom;
+
    // save
    float arr[100];
    int iArr = 0;
+   arr[iArr++] = decayChannel;
    arr[iArr++] = cent;
    arr[iArr++] = vertex.X();
    arr[iArr++] = vertex.Y();
@@ -208,6 +264,7 @@ void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& 
    arr[iArr++] = v00.Z();
 
    arr[iArr++] = rMom.M();
+   arr[iArr++] = rMisPidMom.M();
    arr[iArr++] = rMom.Perp();
    arr[iArr++] = rMom.PseudoRapidity();
    arr[iArr++] = rMom.Rapidity();
@@ -299,7 +356,7 @@ float dca1To2(TVector3 const& p1, TVector3 const& pos1, TVector3 const& p2, TVec
 TLorentzVector smearMom(TLorentzVector const& b, TF1 const * const fMomResolution)
 {
    float const pt = b.Perp();
-   float const sPt = gRandom->Gaus(pt, pt * fMomResolution->Eval(pt));
+   float const sPt = gRandom->Gaus(pt, 1.2 * pt * fMomResolution->Eval(pt));
 
    TLorentzVector sMom;
    sMom.SetXYZM(sPt * cos(b.Phi()), sPt * sin(b.Phi()), sPt * sinh(b.PseudoRapidity()), b.M());
@@ -362,9 +419,9 @@ void bookObjects()
    result->cd();
 
    TH1::AddDirectory(false);
-   nt = new TNtuple("nt", "", "cent:vx:vy:vz:"
+   nt = new TNtuple("nt", "", "decayChannel:cent:vx:vy:vz:"
                     "pid:w:m:pt:eta:y:phi:v0x:v0y:v0z:" // MC D0
-                    "rM:rPt:rEta:rY:rPhi:reco:" // Rc D0
+                    "rM:misPidM:rPt:rEta:rY:rPhi:reco:" // Rc D0
                     "dca12:decayLength:dcaD0ToPv:cosTheta:angle12:cosThetaStar:" // Rc pair
                     "kM:kPt:kEta:kY:kPhi:kDca:" // MC Kaon
                     "kRM:kRPt:kREta:kRY:kRPhi:kRVx:kRVy:kRVz:kRDca:" // Rc Kaon
