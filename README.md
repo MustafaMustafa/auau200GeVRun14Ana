@@ -3,8 +3,8 @@ LBNL - STAR Experiment, Relativistic Heavy Ion Collider (RHIC), BNL
 RHIC year 2014 Run, with Heavy Flavor Tracker
   
 ###Code Authors:  
-	Guannan Xie (guannanxie@lbl.gov)  
-	Mustafa Mustafa (mmustafa@lbl.gov)  
+[Guannan Xie](http://github.com/GuannanXie) - guannanxie@lbl.gov  
+[Mustafa Mustafa](http://github.com/MustafaMustafa)  - mmustafa@lbl.gov  
 
 - - -
 ### Pico production monitors:
@@ -13,14 +13,16 @@ RHIC year 2014 Run, with Heavy Flavor Tracker
 - - -
 ### Presentations:  
 #### STAR Protected:  
-- [Introduction to data production and pipeline I](http://www.star.bnl.gov/protected/heavy/mstftsm/run14/talks/2015-04-02.pdf), Mustafa, HF PWG, 2014-04-02  
-- [Pico Heavy Flavor Analysis Library](https://drupal.star.bnl.gov/STAR/system/files/2016-06-01-Jochen-Mustafa_0.pdf), Mustafa, HF PWG, 2014-04-02  
-- [D<sup>0</sup> Production for Run14 AuAu200 GeV](https://drupal.star.bnl.gov/STAR/system/files/2015May14_Run14_200GeV_D0_HF.pdf), Guannan, HF PWG, 2014-05-14  
-- [D<sup>0</sup> Analysis Status](https://drupal.star.bnl.gov/STAR/system/files/2015May18_Run14_200GeV_D0_SoftHadron.pdf), Guannan, Soft Hadron, 2014-05-18  
+- [Introduction to data production and pipeline I](http://www.star.bnl.gov/protected/heavy/mstftsm/run14/talks/2015-04-02.pdf), Mustafa, HF PWG, 2015-04-02  
+- [Pico Heavy Flavor Analysis Library](https://drupal.star.bnl.gov/STAR/system/files/2016-06-01-Jochen-Mustafa_0.pdf), Mustafa, HF PWG, 2015-04-02  
+- [D<sup>0</sup> Production for Run14 AuAu200 GeV](https://drupal.star.bnl.gov/STAR/system/files/2015May14_Run14_200GeV_D0_HF.pdf), Guannan, HF PWG, 2015-05-14  
+- [D<sup>0</sup> Analysis Status](https://drupal.star.bnl.gov/STAR/system/files/2015May18_Run14_200GeV_D0_SoftHadron.pdf), Guannan, Soft Hadron, 2015-05-18  
 - [D<sup>0</sup> Reconstruction in Run14 Au+Au 200 GeV](https://drupal.star.bnl.gov/STAR/system/files/2015June2_Run14_200GeV_D0_STARCollMeeting.pdf), Guannan, STAR Collaboration Meeting, 2015-06-02  
 - [KF vs. Minuit vertex impact on D<sup>0</sup> reconstruction](https://drupal.star.bnl.gov/STAR/system/files/2015June12_Run14_200GeV_D0_Kf.pdf), Guannan, HF PWG, 2015-06-11  
 - [D<sup>0</sup> Production and R_cp correction](http://www.star.bnl.gov/protected/heavy/mstftsm/run14/talks/2015-06-11-HF-PWG.pdf), Mustafa, HF PWG, 2015-06-11  
 - [D<sup>0</sup> R_cp correction](http://rnc.lbl.gov/~xdong/SoftHadron/presentations/20150615/2015-06-15-Soft-Hadron.pdf), Mustafa, Soft Hadron, 2015-06-15  
+- [D<sup>0</sup> NMF extraction](http://www.star.bnl.gov/protected/heavy/mstftsm/run14/talks/2015-06-18-PWG.pdf), Mustafa, HF PWG, 2015-06-18
+- [D<sup>0</sup> Bump - Forgeround Cocktail](http://rnc.lbl.gov/~xdong/SoftHadron/softhadron.html), Mustafa, Soft Hadron, 2015-06-22  
 
 - - -
 ### Preliminary results:
