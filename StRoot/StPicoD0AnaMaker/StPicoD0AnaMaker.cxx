@@ -129,7 +129,7 @@ Int_t StPicoD0AnaMaker::Make()
       int centrality  = mGRefMultCorrUtil->getCentralityBin9();
       const double reweight = mGRefMultCorrUtil->getWeight();
       const double refmultCor = mGRefMultCorrUtil->getRefMultCorr();
-      mHists->addCent(refmultCor, centrality, reweight);
+      mHists->addCent(refmultCor, centrality, reweight, pVtx.z());
 
       //Basiclly add some QA plots
       UInt_t nTracks = picoDst->numberOfTracks();
@@ -142,9 +142,9 @@ Int_t StPicoD0AnaMaker::Make()
          float dca = float(helix.geometricSignedDistance(pVtx));
          StThreeVectorF momentum = trk->gMom(pVtx, picoDst->event()->bField());
 
-         bool TofMatch = getTofBeta(trk, &pVtx) > 0;
+         bool tofMatch = getTofBeta(trk, &pVtx) > 0;
 
-         int tofMatchFlag =  TofMatch ? 1 : 0 ;
+         int tofMatchFlag =  tofMatch ? 1 : 0 ;
          int hftMatchFlag =  trk->isHFTTrack() ? 1 : 0 ;
 
          if (!isGoodQaTrack(trk, momentum, dca)) continue;
@@ -156,26 +156,21 @@ Int_t StPicoD0AnaMaker::Make()
 
          // mHists->addQaNtuple(picoDst->event()->runId(), dca, pVtx.z(), momentum.perp(), momentum.pseudoRapidity(), momentum.phi(), centrality, refmultCor, picoDst->event()->ZDCx(), tofMatchFlag, hftMatchFlag);
 
-         if (trk && TofMatch && fabs(dca) < 1.5 && fabs(trk->nSigmaPion()) < anaCuts::nSigmaPion)  mHists->AddPionTest(momentum.perp());
-         if (trk && TofMatch && fabs(dca) < 1.5 && fabs(trk->nSigmaKaon()) < anaCuts::nSigmaKaon)  mHists->AddKaonTest(momentum.perp());
-
-         bool IsPion = kFALSE;
-         bool IsKaon = kFALSE;
-         if (fabs(trk->nSigmaPion()) < anaCuts::nSigmaPion)  IsPion = kTRUE;
-         if (fabs(trk->nSigmaKaon()) < anaCuts::nSigmaKaon)  IsKaon = kTRUE;
-         if (trk && TofMatch && fabs(dca) < 1.0 && trk->isHFTTrack() && (IsPion || IsKaon))
+         bool isPion = kFALSE;
+         bool isKaon = kFALSE;
+         if (fabs(trk->nSigmaPion()) < anaCuts::nSigmaPion)  isPion = kTRUE;
+         if (fabs(trk->nSigmaKaon()) < anaCuts::nSigmaKaon)  isKaon = kTRUE;
+         if (trk && tofMatch && fabs(dca) < 1.0 && trk->isHFTTrack() && (isPion || isKaon))
          {
-            mHists->addDcaPtCent(dca, dcaXy, dcaZ, IsPion, IsKaon, momentum.perp(), centrality, momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx() / 1000.); //add Dca distribution
+            mHists->addDcaPtCent(dca, dcaXy, dcaZ, isPion, isKaon, momentum.perp(), centrality, momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx() / 1000.); //add Dca distribution
          }
-         if (trk && TofMatch && fabs(dca) < 1.5 && (IsPion || IsKaon))
+         if (trk && tofMatch && fabs(dca) < 1.5 && (isPion || isKaon))
          {
-            mHists->addTpcDenom1(IsPion, IsKaon, momentum.perp(), centrality, momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx() / 1000.); //Dca cut on 1.5cm, add Tpc Denominator
-            if (IsPion) mHists->AddPionTest2(momentum.perp());
-            if (IsKaon) mHists->AddKaonTest2(momentum.perp());
+            mHists->addTpcDenom1(isPion, isKaon, momentum.perp(), centrality, momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx() / 1000.); //Dca cut on 1.5cm, add Tpc Denominator
          }
-         if (trk && TofMatch && fabs(dca) < 1.5 && trk->isHFTTrack() && (IsPion || IsKaon))
+         if (trk && tofMatch && fabs(dca) < 1.5 && trk->isHFTTrack() && (isPion || isKaon))
          {
-            mHists->addHFTNumer1(IsPion, IsKaon, momentum.perp(), centrality,  momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx() / 1000.); //Dca cut on 1.5cm, add HFT Numerator
+            mHists->addHFTNumer1(isPion, isKaon, momentum.perp(), centrality,  momentum.pseudoRapidity(), momentum.phi(), pVtx.z(), picoDst->event()->ZDCx() / 1000.); //Dca cut on 1.5cm, add HFT Numerator
          }
       } // .. end tracks loop
 
