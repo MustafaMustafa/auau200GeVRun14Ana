@@ -1,4 +1,4 @@
-##D<sup>0</sup> Spectra and Nuclear Modification Factor Analysis
+##D<sup>0</sup> Spectra and Nuclear Modification Factor Analysis  
 LBNL - STAR Experiment, Relativistic Heavy Ion Collider (RHIC), BNL  
 RHIC year 2014 Run, with Heavy Flavor Tracker
   
@@ -46,6 +46,8 @@ RHIC year 2014 Run, with Heavy Flavor Tracker
 31. [D<sup>0</sup> Production in Run14 P16id](http://www.star.bnl.gov/protected/heavy/mstftsm/run14/P16idTest/2016-05-04.pdf), Mustafa, HF PWG, 2016-05-05  
 32. [KF/Minuit Vertex Fitters 
 Performance in P16id/P15ic](http://www.star.bnl.gov/protected/heavy/mstftsm/run14/talks/2016-05-12.pdf), Mustafa, Offline Software Meeting, 2016-05-16
+33. [Data-Driven Fast Simulator, Validations and Cross-Checks](https://drupal.star.bnl.gov/STAR/system/files/2016-08-14.pdf), Mustafa/Guannan, Collaboration Meeting, 2016-08-14
+34. [D<sup>0</sup> and D<sup>+-</sup> production](https://drupal.star.bnl.gov/STAR/system/files/2016Augst16_D0Dpm.pdf), Guannan/Mustafa, Collaboration Meeting, 2016-08-16
 
 - - -
 ### Preliminary results:
